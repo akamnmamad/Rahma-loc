@@ -117,13 +117,16 @@
             visitBtn.disabled = true;
         }
 
-        document.getElementById('startBtn').addEventListener('click', () => {
-            const empId = document.getElementById('employeeSelect').value;
+        // --- بەشی نوێ: چارەسەری کێشەی ڕیفرێشکردن (Local Storage) ---
+        
+        // فەنکشنێک بۆ دەستپێکردنی لۆکەیشن کە لە دوو شوێنەوە بانگ دەکرێت
+        function startTracking(empId) {
             if (navigator.geolocation) {
                 document.getElementById('status').innerHTML = '<span class="pulse"></span> بەدواداچوون چالاکە و ئۆنلاینیت';
                 document.getElementById('status').style.color = '#10b981';
                 document.getElementById('startBtn').style.display = 'none';
                 document.getElementById('stopBtn').style.display = 'flex';
+                document.getElementById('employeeSelect').value = empId;
                 document.getElementById('employeeSelect').disabled = true;
                 if (todayMarkets.length > 0) document.getElementById('marketSection').style.display = 'block';
 
@@ -133,10 +136,33 @@
                     document.getElementById('status').innerHTML = '<i class="fas fa-exclamation-triangle"></i> هەڵە هەیە، دڵنیابە GPS کراوەتەوە.';
                     document.getElementById('status').style.color = '#ef4444';
                 }, { enableHighAccuracy: true });
+                
+                // پاشەکەوتکردنی دۆخی کارمەندەکە لە مۆبایلەکەدا
+                localStorage.setItem('isTracking', 'true');
+                localStorage.setItem('activeEmpId', empId);
             } else {
                 alert("مۆبایلەکەت پشتگیری جی پی ئێس ناکات.");
             }
+        }
+
+        // پشکنین کاتێک ئەپەکە دەکرێتەوە، ئایا پێشتر دەستی پێکردووە؟
+        window.onload = () => {
+            const isTracking = localStorage.getItem('isTracking');
+            const activeEmpId = localStorage.getItem('activeEmpId');
+            
+            if (isTracking === 'true' && activeEmpId) {
+                // ئەگەر پێشتر دەستی پێکردبوو، ڕاستەوخۆ لۆکەیشنەکە بەردەوام بکە
+                startTracking(activeEmpId);
+            }
+        };
+
+        // کاتێک دوگمەی دەستپێکردن دادەگرێت
+        document.getElementById('startBtn').addEventListener('click', () => {
+            const empId = document.getElementById('employeeSelect').value;
+            startTracking(empId);
         });
+
+        // --- کۆتایی بەشی نوێ ---
 
         document.getElementById('visitBtn').addEventListener('click', () => {
             const empId = document.getElementById('employeeSelect').value;
@@ -154,10 +180,15 @@
             setTimeout(() => { document.getElementById('visitStatus').innerHTML = ''; }, 3500);
         });
 
+        // کاتێک دوگمەی وەستان دادەگرێت
         document.getElementById('stopBtn').addEventListener('click', () => {
             if (watchId) navigator.geolocation.clearWatch(watchId);
             const empId = document.getElementById('employeeSelect').value;
             remove(ref(db, 'employees/' + empId)); 
+            
+            // سڕینەوەی دۆخەکە لە مۆبایلەکەدا بۆ ئەوەی بزانێت دەوامی تەواو بووە
+            localStorage.removeItem('isTracking');
+            localStorage.removeItem('activeEmpId');
 
             document.getElementById('status').innerHTML = '<i class="fas fa-bed"></i> دەوامت کۆتایی هات';
             document.getElementById('status').style.color = '#64748b';
