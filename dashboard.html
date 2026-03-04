@@ -11,18 +11,16 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Kufi Arabic', sans-serif; }
         body { background-color: #f3f4f6; display: flex; height: 100vh; overflow: hidden; flex-direction: row; }
-        
-        /* دیزاینی لای ڕاست (Sidebar) */
         .sidebar { width: 360px; background-color: #ffffff; box-shadow: -4px 0 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; z-index: 1000; }
-        .sidebar-header { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white; padding: 30px 20px; text-align: center; border-bottom: 4px solid #3b82f6; }
+        .sidebar-header { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white; padding: 30px 20px; text-align: center; border-bottom: 4px solid #3b82f6; display: flex; flex-direction: column; align-items: center; }
+        .header-content { display: flex; flex-direction: column; align-items: center; }
         .company-logo { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #ffffff; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); background-color: white;}
         .sidebar-header h2 { font-size: 1.4rem; margin-bottom: 5px; color: #f8fafc; font-weight: 900; letter-spacing: 0.5px; }
-        .sidebar-header p { font-size: 0.85rem; color: #94a3b8; margin-bottom: 12px; }
+        .header-desc { font-size: 0.85rem; color: #94a3b8; margin-bottom: 12px; }
         .today-badge { background-color: #3b82f6; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; display: inline-block; box-shadow: 0 2px 5px rgba(59,130,246,0.3); }
 
-        /* لیستی کارمەندەکان */
         .employee-list { flex: 1; overflow-y: auto; padding: 20px; }
-        .employee-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .employee-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.02); position: relative; }
         .employee-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.08); border-color: #cbd5e1; }
         .emp-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.3rem; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
         .emp-details { flex: 1; text-align: right; }
@@ -30,47 +28,78 @@
         .emp-status { font-size: 0.8rem; color: #64748b; margin-top: 5px; display: flex; align-items: center; gap: 6px; }
         .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; box-shadow: 0 0 5px currentColor; }
         
-        /* دوگمەی ڕاپۆرت */
+        .battery-badge { position: absolute; left: 15px; top: 15px; background: #f1f5f9; padding: 4px 8px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; display: flex; align-items: center; gap: 5px; border: 1px solid #e2e8f0; }
+        .battery-badge.low { color: #ef4444; border-color: #fca5a5; background: #fef2f2; }
+        .battery-badge.good { color: #10b981; }
+
         .report-btn { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; border: none; padding: 16px; width: calc(100% - 40px); margin: 0 20px 20px 20px; border-radius: 12px; font-size: 1.05rem; font-weight: bold; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(37,99,235,0.3); display: flex; align-items: center; justify-content: center; gap: 10px; }
         .report-btn:hover { transform: scale(1.02); box-shadow: 0 6px 20px rgba(37,99,235,0.4); }
 
-        /* پەنجەرەی مۆدال (ڕاپۆرت) */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.6); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
         .modal-content { background: #ffffff; padding: 35px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid #e2e8f0; }
         .modal-content h3 { color: #0f172a; margin-bottom: 25px; font-size: 1.3rem; font-weight: 900; }
         .report-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 1.05rem; background: #f8fafc; border-radius: 8px; margin-bottom: 10px; }
-        
         .modal-actions { margin-top: 30px; display: flex; flex-direction: column; gap: 12px; }
         .modal-row { display: flex; gap: 12px; }
-        .btn-close { flex: 1; background: #64748b; color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-close:hover { background: #475569; }
-        .btn-clear { flex: 1; background: #ef4444; color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-clear:hover { background: #dc2626; }
+        .btn-close, .btn-clear { flex: 1; color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-close { background: #64748b; } .btn-close:hover { background: #475569; }
+        .btn-clear { background: #ef4444; } .btn-clear:hover { background: #dc2626; }
         .btn-excel { background: #10b981; color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-size: 1.05rem; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; box-shadow: 0 4px 10px rgba(16,185,129,0.3); }
-        .btn-excel:hover { background: #059669; transform: translateY(-2px); }
 
-        /* نەخشە */
         .map-container { flex: 1; position: relative; height: 100%; width: 100%; }
         #map { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
         .custom-marker { display: flex; justify-content: center; align-items: center; }
-        .marker-pin { width: 28px; height: 28px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 15px rgba(0,0,0,0.4); transition: all 0.3s ease; }
-        .market-marker { font-size: 26px; filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.4)); transition: all 0.3s; }
+        .marker-pin { width: 28px; height: 28px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 15px rgba(0,0,0,0.4); }
+        .market-marker { font-size: 26px; filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.4)); }
         
-        /* مۆبایل */
-        @media (max-width: 768px) { body { flex-direction: column-reverse; } .sidebar { width: 100%; height: 45%; border-top-left-radius: 20px; border-top-right-radius: 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); } .map-container { height: 55%; width: 100%; } .sidebar-header { padding: 20px; } }
+        .map-label { 
+            background: rgba(255, 255, 255, 0.9); 
+            border: none; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3); 
+            border-radius: 6px; 
+            font-size: 0.75rem; 
+            font-weight: 900; 
+            color: #0f172a; 
+            padding: 3px 8px; 
+            direction: rtl; 
+            font-family: 'Noto Kufi Arabic', sans-serif;
+        }
+        .leaflet-tooltip-bottom:before { border-bottom-color: rgba(255, 255, 255, 0.9); }
+        
+        @media (max-width: 768px) { 
+            body { flex-direction: column; } 
+            .map-container { height: 60vh; width: 100%; flex: none; } 
+            .sidebar { width: 100%; height: 40vh; flex: none; border-top-left-radius: 20px; border-top-right-radius: 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); margin-top: -15px; z-index: 1001; } 
+            .sidebar-header { padding: 12px 15px; flex-direction: row; justify-content: space-between; text-align: right; }
+            .header-content { flex-direction: row; align-items: center; gap: 10px; }
+            .company-logo { width: 45px; height: 45px; margin-bottom: 0; box-shadow: none; border-width: 2px;}
+            .sidebar-header h2 { font-size: 1.05rem; margin-bottom: 0; }
+            .header-desc { display: none; }
+            .today-badge { font-size: 0.75rem; padding: 5px 10px; }
+            .employee-list { padding: 10px 15px; }
+            .employee-card { padding: 10px; margin-bottom: 10px; }
+            .emp-icon { width: 40px; height: 40px; font-size: 1.1rem; }
+            .emp-name { font-size: 0.95rem; }
+            .report-btn { padding: 12px; margin: 5px 15px 15px 15px; width: calc(100% - 30px); font-size: 0.95rem; }
+            .map-label { font-size: 0.65rem; padding: 2px 6px; } 
+        }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="logo.jpeg" alt="لۆگۆی کۆمپانیا" class="company-logo">
-            <h2>کۆمپانیای الرحمە</h2>
-            <p>سیستەمی چاودێری و بەڕێوەبردنی مەیدانی</p>
+            <div class="header-content">
+                <img src="logo.jpeg" alt="لۆگۆی کۆمپانیا" class="company-logo">
+                <div>
+                    <h2>کۆمپانیای الرحمە</h2>
+                    <p class="header-desc">سیستەمی چاودێری و بەڕێوەبردنی مەیدانی</p>
+                </div>
+            </div>
             <span class="today-badge" id="todayDisplay"><i class="fas fa-calendar-day"></i> ...</span>
         </div>
         <div class="employee-list" id="employee-list">
-            <div style="text-align:center; margin-top:40px; color:#94a3b8;">
+            <div style="text-align:center; margin-top:30px; color:#94a3b8;">
                 <i class="fas fa-satellite-dish fa-2x" style="margin-bottom:10px; animation: pulse 2s infinite;"></i>
                 <p>چاوەڕێی هاتنی لۆکەیشنەکان...</p>
             </div>
@@ -81,10 +110,9 @@
     <div class="modal-overlay" id="reportModal">
         <div class="modal-content">
             <h3><i class="fas fa-file-invoice" style="color:#3b82f6;"></i> ڕاپۆرتی سەردانی مارکێتەکان</h3>
-            <div id="reportData" style="margin-bottom: 25px; text-align:right;">
-                </div>
+            <div id="reportData" style="margin-bottom: 25px; text-align:right;"></div>
             <div class="modal-actions">
-                <button class="btn-excel" id="exportExcelBtn"><i class="fas fa-file-excel"></i> داگرتن بە فایلی ئێکسڵ (Excel)</button>
+                <button class="btn-excel" id="exportExcelBtn"><i class="fas fa-file-excel"></i> داگرتن بە فایلی ئێکسڵ</button>
                 <div class="modal-row">
                     <button class="btn-close" id="closeReportBtn"><i class="fas fa-times"></i> داخستن</button>
                     <button class="btn-clear" id="clearDataBtn"><i class="fas fa-trash-alt"></i> سڕینەوەی هەفتە</button>
@@ -115,7 +143,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // نەخشەکە ڕێکخراوە بۆ سەر سلێمانی بە زوومێکی گونجاو
         var map = L.map('map', {zoomControl: false}).setView([35.5600, 45.3800], 13); 
         L.control.zoom({ position: 'topleft' }).addTo(map);
         L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(map);
@@ -123,29 +150,22 @@
         var empMarkers = {};
         var marketMarkers = {};
         var colors = { "emp1": "#3b82f6", "emp2": "#ef4444", "emp3": "#10b981", "emp4": "#f59e0b" };
-        
-        // ناوی کارمەندەکان لێرەدا گۆڕدراوە
         var names = { "emp1": "کاک ئەلەند", "emp2": "کاک ئاراس", "emp3": "کاک کاروان" };
-        
         let currentHistoryData = {}; 
 
         const currentDayNum = new Date().getDay(); 
         const dayNames = ["یەکشەممە", "دووشەممە", "سێشەممە", "چوارشەممە", "پێنجشەممە", "هەینی", "شەممە"];
         const todayName = dayNames[currentDayNum];
-        document.getElementById('todayDisplay').innerHTML = `<i class="fas fa-calendar-day"></i> مارکێتەکانی ئەمڕۆ: ${todayName}`;
+        document.getElementById('todayDisplay').innerHTML = `<i class="fas fa-calendar-day"></i> ${todayName}`;
 
         const weeklyMarkets = {
-            "شەممە": [],
-            "یەکشەممە": [],
-            "دووشەممە": [],
-            "سێشەممە": [],
+            "شەممە": [], "یەکشەممە": [], "دووشەممە": [], "سێشەممە": [],
             "چوارشەممە": [
                 { id: "wed_1", name: "هەرزان بازاڕی مالیکەی ١", lat: 35.5602301, lng: 45.3530159 },
                 { id: "wed_2", name: "T.M.T سوپەرمارکێت", lat: 35.5548691, lng: 45.3930811 },
                 { id: "wed_3", name: "هایپەرمارکێتی سەفرە", lat: 35.5674309, lng: 45.4167429 }
             ],
-            "پێنجشەممە": [],
-            "هەینی": []
+            "پێنجشەممە": [], "هەینی": []
         };
 
         const todayMarkets = weeklyMarkets[todayName] || [];
@@ -155,6 +175,7 @@
 
         todayMarkets.forEach(m => {
             marketMarkers[m.id] = L.marker([m.lat, m.lng], { icon: createMarketIcon(false) }).addTo(map)
+                .bindTooltip(m.name, { permanent: true, direction: 'bottom', className: 'map-label', offset: [0, 8] })
                 .bindPopup(`<div style="text-align:right; font-family:'Noto Kufi Arabic';"><b><i class="fas fa-shopping-cart"></i> ${m.name}</b><br><span style="color:#ef4444; font-size:0.9rem;">هێشتا سەردان نەکراوە</span></div>`);
         });
 
@@ -173,9 +194,7 @@
         });
 
         const historyRef = ref(db, 'visit_history');
-        onValue(historyRef, (snapshot) => {
-            currentHistoryData = snapshot.val() || {};
-        });
+        onValue(historyRef, (snapshot) => { currentHistoryData = snapshot.val() || {}; });
 
         document.getElementById('openReportBtn').addEventListener('click', () => {
             let content = '';
@@ -186,50 +205,79 @@
                     <div class="report-item">
                         <span style="font-weight:bold; color:${color};"><i class="fas fa-user-tie"></i> ${names[empId]}</span>
                         <span style="background:#e2e8f0; padding:4px 12px; border-radius:20px;"><b style="color:#1e293b; font-size:1.1rem;">${count}</b> مارکێت</span>
-                    </div>
-                `;
+                    </div>`;
             }
             document.getElementById('reportData').innerHTML = content;
             document.getElementById('reportModal').style.display = 'flex';
         });
 
-        document.getElementById('closeReportBtn').addEventListener('click', () => {
-            document.getElementById('reportModal').style.display = 'none';
-        });
-
+        document.getElementById('closeReportBtn').addEventListener('click', () => { document.getElementById('reportModal').style.display = 'none'; });
         document.getElementById('clearDataBtn').addEventListener('click', () => {
             if(confirm("ئایا دڵنیایت دەتەوێت داتای مارکێتە سەردانیکراوەکانی ئەم هەفتەیە بسڕیتەوە؟")) {
-                remove(ref(db, 'visited_markets'));
-                remove(ref(db, 'visit_history'));
-                alert("بە سەرکەوتوویی داتاکان پاککرانەوە و ئامادەیە بۆ هەفتەی نوێ.");
-                document.getElementById('reportModal').style.display = 'none';
+                remove(ref(db, 'visited_markets')); remove(ref(db, 'visit_history'));
+                alert("بە سەرکەوتوویی داتاکان پاککرانەوە."); document.getElementById('reportModal').style.display = 'none';
             }
         });
 
+        // --- سیستەمی نوێی دەرکردنی ئێکسڵ ---
         document.getElementById('exportExcelBtn').addEventListener('click', () => {
             let csvContent = '\uFEFF'; 
-            csvContent += "ناوی کارمەند,ناوی مارکێت,بەروار,کات\n";
             let hasData = false;
+
+            // بەشی یەکەم: کورتەی کارکردنی ڕۆژانە (پوختە)
+            csvContent += "کورتەی کارکردنی ڕۆژانە\n";
+            csvContent += "ناوی کارمەند,بەروار,کاتی یەکەم سەردان (دەستپێک),کاتی کۆتا سەردان (تەواوبوون),کۆی مارکێتەکان\n";
+
+            let summaryMap = {};
+
+            for (let empId in currentHistoryData) {
+                let empVisits = currentHistoryData[empId];
+                let empName = names[empId] || "نەناسراو";
+
+                for (let visitKey in empVisits) {
+                    let visit = empVisits[visitKey];
+                    let key = empId + "_" + visit.date;
+                    if(!summaryMap[key]) {
+                        summaryMap[key] = { name: empName, date: visit.date, times: [], count: 0 };
+                    }
+                    summaryMap[key].times.push(visit.time);
+                    summaryMap[key].count++;
+                    hasData = true;
+                }
+            }
+
+            if (!hasData) { 
+                alert("هیچ داتایەک نییە بۆ داگرتن! با سەرەتا کارمەندەکان سەردانی مارکێتەکان بکەن."); 
+                return; 
+            }
+
+            // پڕکردنەوەی خشتەی کورتە
+            for (let key in summaryMap) {
+                let data = summaryMap[key];
+                // لەبەر ئەوەی داتاکان بە ڕیزبەندی کات تۆمار دەبن، یەکەم دانە دەستپێكە و کۆتا دانە کاتی تەواوبوونە
+                let firstTime = data.times[0];
+                let lastTime = data.times[data.times.length - 1];
+                
+                csvContent += `${data.name},${data.date},${firstTime},${lastTime},${data.count}\n`;
+            }
+
+            // بەشی دووەم: وردەکاری هەموو سەردانەکان بەپێی کات
+            csvContent += "\n\nوردەکاری هەموو مارکێتەکان بەپێی کات\n";
+            csvContent += "ناوی کارمەند,ناوی مارکێت,بەروار,کات\n";
+
             for (let empId in currentHistoryData) {
                 let empVisits = currentHistoryData[empId];
                 let empName = names[empId] || "نەناسراو";
                 for (let visitKey in empVisits) {
                     let visit = empVisits[visitKey];
                     csvContent += `${empName},${visit.market},${visit.date},${visit.time}\n`;
-                    hasData = true;
                 }
             }
-            if (!hasData) {
-                alert("هیچ داتایەک نییە بۆ داگرتن! با سەرەتا کارمەندەکان سەردانی مارکێتەکان بکەن.");
-                return;
-            }
+
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
+            const link = document.createElement("a"); link.href = URL.createObjectURL(blob);
             link.download = `ڕاپۆرتی_مروجەکان_${new Date().toLocaleDateString('ku-IQ')}.csv`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
         });
 
         const locationsRef = ref(db, 'employees');
@@ -242,6 +290,10 @@
                     let empData = data[empId];
                     let color = colors[empId] || "#000";
                     let name = names[empId] || "نەناسراو";
+                    
+                    let batteryText = empData.battery !== undefined ? `${empData.battery}%` : "نەزانراو";
+                    let batteryClass = (empData.battery !== undefined && empData.battery <= 20) ? "low" : "good";
+                    let batteryIcon = (empData.battery !== undefined && empData.battery <= 20) ? "fa-battery-quarter" : "fa-battery-half";
 
                     if (empMarkers[empId]) empMarkers[empId].setLatLng([empData.lat, empData.lng]);
                     else empMarkers[empId] = L.marker([empData.lat, empData.lng], { icon: createEmpIcon(color) }).addTo(map).bindPopup(`<div style="font-family:'Noto Kufi Arabic'; text-align:right;"><b>${name}</b><br><span style="color:#10b981; font-size:12px;">ئۆنلاینە</span></div>`);
@@ -253,11 +305,14 @@
                                 <div class="emp-name">${name}</div>
                                 <div class="emp-status"><span class="status-dot" style="background-color: ${color};"></span> لایڤ (ئۆنلاین)</div>
                             </div>
+                            <div class="battery-badge ${batteryClass}">
+                                <i class="fas ${batteryIcon}"></i> ${batteryText}
+                            </div>
                         </div>`;
                 }
             } else {
                 listContainer.innerHTML = `
-                    <div style="text-align:center; margin-top:40px; color:#94a3b8;">
+                    <div style="text-align:center; margin-top:30px; color:#94a3b8;">
                         <i class="fas fa-bed fa-2x" style="margin-bottom:10px;"></i>
                         <p>هیچ کارمەندێک دەوامی نەکردووە</p>
                     </div>`;
