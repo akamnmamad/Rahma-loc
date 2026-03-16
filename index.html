@@ -1,201 +1,161 @@
 <!DOCTYPE html>
-<html lang="ku" dir="rtl">
+<html id="html-tag" lang="ku" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ئەپی مروجەکان - الرحمە</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Rizzoli Premium Menu</title>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
-        body { font-family: 'Noto Kufi Arabic', sans-serif; background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .card { background: white; padding: 35px 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); text-align: center; width: 100%; max-width: 400px; margin-bottom: 20px; border: 1px solid #ffffff; }
+        :root { 
+            --p: #f97316; 
+            --bg: #000000; 
+            --card: #121212; 
+            --text: #ffffff; 
+            --gray: #888888; 
+            --border: #222222;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+        #splash { position: fixed; inset: 0; background: var(--bg); z-index: 3000; display: flex; align-items: center; justify-content: center; transition: 0.6s; }
+        .logo-main { width: 150px; margin-bottom: 30px; }
+
+        .ar-box { position: relative; width: 100%; height: 45vh; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); border-bottom: 1px solid var(--border); }
+        model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
         
-        .company-logo { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 4px solid #3b82f6; margin-bottom: 15px; background-color: white; box-shadow: 0 4px 15px rgba(59,130,246,0.3);}
-        h1 { color: #1e293b; font-size: 1.5rem; margin-bottom: 5px; font-weight: 900; }
-        h2 { color: #64748b; margin-bottom: 5px; font-size: 1rem; font-weight: 400; }
-        .day-badge { background-color: #f1f5f9; color: #3b82f6; padding: 6px 18px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; display: inline-block; margin-bottom: 25px; border: 1px solid #e2e8f0; }
-        
-        select { width: 100%; padding: 14px; font-size: 1.05rem; border-radius: 12px; border: 2px solid #e2e8f0; margin-bottom: 20px; font-family: 'Noto Kufi Arabic', sans-serif; background-color: #f8fafc; color: #1e293b; outline: none; transition: 0.3s; }
-        select:focus { border-color: #3b82f6; background-color: #ffffff; }
-        
-        button { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; padding: 16px; width: 100%; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(59,130,246,0.3); display: flex; justify-content: center; align-items: center; gap: 10px; }
-        button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59,130,246,0.4); }
-        button:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; transform: none; color: #64748b; }
-        
-        button.stop { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); display: none; margin-top: 15px; box-shadow: 0 4px 15px rgba(239,68,68,0.3); }
-        button.stop:hover { box-shadow: 0 6px 20px rgba(239,68,68,0.4); }
-        
-        button.visit-btn { background: linear-gradient(135deg, #10b981 0%, #059669 100%); margin-top: 10px; box-shadow: 0 4px 15px rgba(16,185,129,0.3); }
-        button.visit-btn:hover { box-shadow: 0 6px 20px rgba(16,185,129,0.4); }
-        
-        #status { margin-top: 15px; font-size: 0.95rem; color: #64748b; font-weight: bold; }
-        .pulse { display: inline-block; width: 12px; height: 12px; background-color: #10b981; border-radius: 50%; animation: blink 1.5s infinite; margin-left: 8px; box-shadow: 0 0 10px #10b981; }
-        @keyframes blink { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
-        
-        #marketSection { display: none; margin-top: 25px; border-top: 2px dashed #e2e8f0; padding-top: 25px; }
+        .model-info { position: absolute; bottom: 80px; width: 100%; text-align: center; padding: 0 20px; pointer-events: none; }
+        .model-info h2 { font-size: 24px; font-weight: 900; color: var(--p); }
+        .model-info p { font-size: 12px; color: var(--gray); margin: 5px 0 10px; }
+        .model-info span { background: var(--text); color: black; padding: 4px 12px; border-radius: 8px; font-size: 16px; font-weight: 900; }
+
+        .content { padding: 20px; }
+        .section-label { font-weight: 900; margin: 25px 0 15px; font-size: 20px; color: var(--p); display: flex; align-items: center; gap: 8px; }
+        .section-label::after { content: ""; height: 1px; background: var(--border); flex: 1; }
+
+        .tabs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+        .tab { background: var(--card); color: var(--gray); padding: 10px 20px; border-radius: 12px; font-weight: bold; border: 1px solid var(--border); white-space: nowrap; }
+        .tab.active { background: var(--p); color: black; border-color: var(--p); }
+
+        .h-list { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+        .h-card { min-width: 100px; background: var(--card); padding: 15px 10px; border-radius: 20px; text-align: center; border: 1.5px solid var(--border); }
+        .h-card.active { border-color: var(--p); }
+        .h-card span { font-size: 28px; display: block; margin-bottom: 5px; }
+
+        .menu-item-card { background: var(--card); border-radius: 20px; display: flex; align-items: center; padding: 12px; gap: 15px; margin-bottom: 12px; border: 1px solid var(--border); }
+        .menu-item-card img { width: 80px; height: 80px; border-radius: 15px; object-fit: cover; }
+        .item-details h4 { font-size: 16px; color: var(--p); }
+        .item-details p { font-size: 11px; color: var(--gray); }
+        .item-price { font-weight: 900; font-size: 14px; margin-top: 5px; display: block; }
+
+        .progress-bar { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--p); width: 0%; transition: 0.3s; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <img src="logo.jpeg" alt="لۆگۆی کۆمپانیا" class="company-logo">
-        <h1>کۆمپانیای الرحمە</h1>
-        <h2>ئەپی کارمەندانی مەیدانی</h2>
-        <div class="day-badge" id="dayDisplay"><i class="fas fa-calendar-check"></i> ...</div>
-        
-        <select id="employeeSelect">
-            <option value="emp1">کاک ئەلەند</option>
-            <option value="emp2">کاک ئاراس</option>
-            <option value="emp3">کاک کاروان</option>
-        </select>
-        
-        <button id="startBtn"><i class="fas fa-satellite-dish"></i> دەستپێکردنی کار (لۆکەیشن)</button>
-        <button id="stopBtn" class="stop"><i class="fas fa-power-off"></i> کۆتایهێنان بە دەوام</button>
-        <div id="status">ئامادەیە بۆ دەستپێکردن</div>
-
-        <div id="marketSection">
-            <h2 style="color: #0f172a; margin-bottom: 15px; font-weight: 900; font-size:1.1rem;"><i class="fas fa-map-marker-alt" style="color:#ef4444;"></i> سەردانی مارکێتەکان</h2>
-            <select id="marketSelect">
-                </select>
-            <button id="visitBtn" class="visit-btn"><i class="fas fa-check-circle"></i> سەردانم کرد و تەواو بووم</button>
-            <div id="visitStatus" style="margin-top: 15px; font-size: 1rem; color: #10b981; font-weight:bold; min-height: 24px;"></div>
+    <div id="splash">
+        <div style="text-align: center; width: 80%;">
+            <img src="1000241254.jpg" class="logo-main">
+            <button style="width:100%; padding:15px; border-radius:15px; background:var(--p); border:none; font-weight:bold; margin-bottom:10px;" onclick="startApp('ku')">دەستپێکردن</button>
+            <button style="width:100%; padding:15px; border-radius:15px; background:transparent; border:1px solid white; color:white;" onclick="startApp('en')">English</button>
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getDatabase, ref, set, push, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+    <div class="ar-box">
+        <model-viewer id="mv" src="" ar camera-controls auto-rotate shadow-intensity="1" scale="1 1 1" environment-image="neutral">
+            <div class="progress-bar" id="pb"></div>
+        </model-viewer>
+        <div class="model-info">
+            <h2 id="display-name">...</h2>
+            <p id="display-ing">...</p>
+            <span id="display-price">... IQD</span>
+        </div>
+    </div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDdH_pylFDT8apk4t6IAHrep4AvXrugYjY",
-            authDomain: "mrawjlocat.firebaseapp.com",
-            databaseURL: "https://mrawjlocat-default-rtdb.firebaseio.com",
-            projectId: "mrawjlocat",
-            storageBucket: "mrawjlocat.firebasestorage.app",
-            messagingSenderId: "819047732014",
-            appId: "1:819047732014:web:ce5da5c9520022a181e0bf"
+    <div class="content">
+        <div class="section-label" id="3d-label">3D MENU</div>
+        <div class="tabs" id="cat-tabs"></div>
+        <div class="h-list" id="3d-list"></div>
+
+        <div class="section-label" id="full-menu-label">VISUAL MENU</div>
+        <div id="visual-menu-container"></div>
+    </div>
+
+    <script>
+        let curL = 'ku';
+        const menuData = {
+            models: {
+                burgers: [
+                    // ئەگەر بینیت مۆدێلێک هێشتا بچووکە، دەتوانیت scale لێرەدا بگۆڕیت، بۆ نموونە "2 2 2"
+                    { name: {ku:"تاوەر بەرگر", en:"Tower Burger"}, price:"9,000", ing:{ku:"گۆشتی فرێش، پەنیر"}, file:"models/ghjjgfgvv.glb", icon:"🍔", scale: "1 1 1" },
+                    { name: {ku:"فریدۆم بەرگر", en:"Freedom Burger"}, price:"6,500", ing:{ku:"مریشک، پەنیر"}, file:"models/freedom.glb", icon:"🍔", scale: "1 1 1" }
+                ],
+                rizzo: [
+                    { name: {ku:"ڕیزۆ هێربس", en:"Rizzo Herbs"}, price:"5,500", ing:{ku:"برنج، مریشک"}, file:"models/rizzo.glb", icon:"🍚", scale: "1 1 1" }
+                ]
+            },
+            fullMenu: [
+                { cat: {ku:"بەرگر", en:"Burgers"}, items: [
+                    { n: {ku:"تاوەر بەرگر", en:"Tower"}, p: "9,000", img: "images/1000242352.png", ing: {ku:"سنگی مریشک، پەنیر"} }
+                ]}
+            ]
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        let watchId = null;
+        function startApp(l) {
+            curL = l;
+            document.getElementById('html-tag').dir = (l === 'ku') ? 'rtl' : 'ltr';
+            renderTabs();
+            renderVisualMenu();
+            switchCat('burgers');
+            document.getElementById('splash').style.display = 'none';
+        }
 
-        const currentDayNum = new Date().getDay(); 
-        const dayNames = ["یەکشەممە", "دووشەممە", "سێشەممە", "چوارشەممە", "پێنجشەممە", "هەینی", "شەممە"];
-        const todayName = dayNames[currentDayNum];
-        document.getElementById('dayDisplay').innerHTML = `<i class="fas fa-calendar-check"></i> مارکێتەکانی: ${todayName}`;
+        function renderTabs() {
+            const cats = [{id:'burgers', n:{ku:"🍔 بەرگر", en:"Burgers"}}, {id:'rizzo', n:{ku:"🍚 ڕیزۆ", en:"Rizzo"}}];
+            document.getElementById('cat-tabs').innerHTML = cats.map(c => 
+                `<div class="tab" id="tab-${c.id}" onclick="switchCat('${c.id}')">${c.n[curL]}</div>`).join('');
+        }
 
-        const weeklyMarkets = {
-            "شەممە": [],
-            "یەکشەممە": [],
-            "دووشەممە": [],
-            "سێشەممە": [],
-            "چوارشەممە": [
-                { id: "wed_1", name: "هەرزان بازاڕی مالیکەی ١" },
-                { id: "wed_2", name: "T.M.T سوپەرمارکێت" },
-                { id: "wed_3", name: "هایپەرمارکێتی سەفرە" }
-            ],
-            "پێنجشەممە": [],
-            "هەینی": []
-        };
+        function switchCat(id) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-'+id).classList.add('active');
+            const ms = menuData.models[id];
+            document.getElementById('3d-list').innerHTML = ms.map((m, i) => `
+                <div class="h-card ${i===0?'active':''}" onclick="updateMV('${m.file}', '${m.name[curL]}', '${m.price}', '${m.ing[curL]}', '${m.scale}', this)">
+                    <span>${m.icon}</span><h4>${m.name[curL]}</h4>
+                </div>`).join('');
+            updateMV(ms[0].file, ms[0].name[curL], ms[0].price, ms[0].ing[curL], ms[0].scale);
+        }
 
-        const todayMarkets = weeklyMarkets[todayName] || [];
-        const marketSelect = document.getElementById('marketSelect');
-        const visitBtn = document.getElementById('visitBtn');
-        
-        if (todayMarkets.length > 0) {
-            todayMarkets.forEach(m => {
-                let option = document.createElement("option");
-                option.value = m.id;
-                option.text = m.name;
-                marketSelect.appendChild(option);
+        function updateMV(f, n, p, ing, sc, el) {
+            const mv = document.getElementById('mv');
+            mv.src = f;
+            mv.setAttribute('scale', sc); // لێرەدا قەبارەکە جێگیر دەکرێت
+            document.getElementById('display-name').innerText = n;
+            document.getElementById('display-ing').innerText = ing;
+            document.getElementById('display-price').innerText = p;
+            if(el) { document.querySelectorAll('.h-card').forEach(c => c.classList.remove('active')); el.classList.add('active'); }
+        }
+
+        function renderVisualMenu() {
+            let html = '';
+            menuData.fullMenu.forEach(cat => {
+                html += `<div style="color:var(--gray); margin: 15px 0;">${cat.cat[curL]}</div>`;
+                cat.items.forEach(item => {
+                    html += `<div class="menu-item-card">
+                        <img src="${item.img}">
+                        <div class="item-details">
+                            <h4>${item.n[curL]}</h4>
+                            <p>${item.ing[curL]}</p>
+                            <span class="item-price">${item.p} IQD</span>
+                        </div>
+                    </div>`;
+                });
             });
-        } else {
-            let option = document.createElement("option");
-            option.text = "ئەمڕۆ هیچ مارکێتێک نییە";
-            marketSelect.appendChild(option);
-            visitBtn.disabled = true;
+            document.getElementById('visual-menu-container').innerHTML = html;
         }
 
-        // --- بەشی نوێ: چارەسەری کێشەی ڕیفرێشکردن (Local Storage) ---
-        
-        // فەنکشنێک بۆ دەستپێکردنی لۆکەیشن کە لە دوو شوێنەوە بانگ دەکرێت
-        function startTracking(empId) {
-            if (navigator.geolocation) {
-                document.getElementById('status').innerHTML = '<span class="pulse"></span> بەدواداچوون چالاکە و ئۆنلاینیت';
-                document.getElementById('status').style.color = '#10b981';
-                document.getElementById('startBtn').style.display = 'none';
-                document.getElementById('stopBtn').style.display = 'flex';
-                document.getElementById('employeeSelect').value = empId;
-                document.getElementById('employeeSelect').disabled = true;
-                if (todayMarkets.length > 0) document.getElementById('marketSection').style.display = 'block';
-
-                watchId = navigator.geolocation.watchPosition((position) => {
-                    set(ref(db, 'employees/' + empId), { lat: position.coords.latitude, lng: position.coords.longitude });
-                }, (error) => {
-                    document.getElementById('status').innerHTML = '<i class="fas fa-exclamation-triangle"></i> هەڵە هەیە، دڵنیابە GPS کراوەتەوە.';
-                    document.getElementById('status').style.color = '#ef4444';
-                }, { enableHighAccuracy: true });
-                
-                // پاشەکەوتکردنی دۆخی کارمەندەکە لە مۆبایلەکەدا
-                localStorage.setItem('isTracking', 'true');
-                localStorage.setItem('activeEmpId', empId);
-            } else {
-                alert("مۆبایلەکەت پشتگیری جی پی ئێس ناکات.");
-            }
-        }
-
-        // پشکنین کاتێک ئەپەکە دەکرێتەوە، ئایا پێشتر دەستی پێکردووە؟
-        window.onload = () => {
-            const isTracking = localStorage.getItem('isTracking');
-            const activeEmpId = localStorage.getItem('activeEmpId');
-            
-            if (isTracking === 'true' && activeEmpId) {
-                // ئەگەر پێشتر دەستی پێکردبوو، ڕاستەوخۆ لۆکەیشنەکە بەردەوام بکە
-                startTracking(activeEmpId);
-            }
-        };
-
-        // کاتێک دوگمەی دەستپێکردن دادەگرێت
-        document.getElementById('startBtn').addEventListener('click', () => {
-            const empId = document.getElementById('employeeSelect').value;
-            startTracking(empId);
-        });
-
-        // --- کۆتایی بەشی نوێ ---
-
-        document.getElementById('visitBtn').addEventListener('click', () => {
-            const empId = document.getElementById('employeeSelect').value;
-            const marketId = document.getElementById('marketSelect').value;
-            const marketName = document.getElementById('marketSelect').options[document.getElementById('marketSelect').selectedIndex].text;
-            
-            let dateObj = new Date();
-            let currentTime = dateObj.toLocaleTimeString('ku-IQ');
-            let currentDate = dateObj.toLocaleDateString('ku-IQ');
-
-            set(ref(db, 'visited_markets/' + marketId), { by: empId, time: currentTime });
-            push(ref(db, 'visit_history/' + empId), { market: marketName, date: currentDate, time: currentTime });
-
-            document.getElementById('visitStatus').innerHTML = `<i class="fas fa-thumbs-up"></i> سەردانی (${marketName}) تۆمارکرا!`;
-            setTimeout(() => { document.getElementById('visitStatus').innerHTML = ''; }, 3500);
-        });
-
-        // کاتێک دوگمەی وەستان دادەگرێت
-        document.getElementById('stopBtn').addEventListener('click', () => {
-            if (watchId) navigator.geolocation.clearWatch(watchId);
-            const empId = document.getElementById('employeeSelect').value;
-            remove(ref(db, 'employees/' + empId)); 
-            
-            // سڕینەوەی دۆخەکە لە مۆبایلەکەدا بۆ ئەوەی بزانێت دەوامی تەواو بووە
-            localStorage.removeItem('isTracking');
-            localStorage.removeItem('activeEmpId');
-
-            document.getElementById('status').innerHTML = '<i class="fas fa-bed"></i> دەوامت کۆتایی هات';
-            document.getElementById('status').style.color = '#64748b';
-            document.getElementById('startBtn').style.display = 'flex';
-            document.getElementById('stopBtn').style.display = 'none';
-            document.getElementById('employeeSelect').disabled = false;
-            document.getElementById('marketSection').style.display = 'none';
+        document.getElementById('mv').addEventListener('progress', e => {
+            document.getElementById('pb').style.width = (e.detail.totalProgress * 100) + '%';
         });
     </script>
 </body>
