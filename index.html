@@ -7,153 +7,116 @@
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
         :root { 
-            --p: #f97316; 
+            --p: #f97316; /* ڕەنگی ناریجی ڕیزۆلی */
             --bg: #000000; 
             --card: #121212; 
             --text: #ffffff; 
             --gray: #888888; 
             --border: #222222;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background: var(--bg); color: var(--text); overflow-x: hidden; }
 
+        /* Splash Screen */
         #splash { position: fixed; inset: 0; background: var(--bg); z-index: 3000; display: flex; align-items: center; justify-content: center; transition: 0.6s; }
         .logo-main { width: 150px; margin-bottom: 30px; }
 
+        /* AR Section */
         .ar-box { position: relative; width: 100%; height: 45vh; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); border-bottom: 1px solid var(--border); }
-        model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
+        model-viewer { width: 100%; height: 100%; }
         
         .model-info { position: absolute; bottom: 80px; width: 100%; text-align: center; padding: 0 20px; pointer-events: none; }
-        .model-info h2 { font-size: 24px; font-weight: 900; color: var(--p); }
-        .model-info p { font-size: 12px; color: var(--gray); margin: 5px 0 10px; }
-        .model-info span { background: var(--text); color: black; padding: 4px 12px; border-radius: 8px; font-size: 16px; font-weight: 900; }
+        .model-info h2 { font-size: 26px; font-weight: 900; color: var(--p); text-shadow: 0 0 10px rgba(249,115,22,0.5); }
+        .model-info p { font-size: 13px; color: var(--gray); margin-top: 5px; }
+        .model-info .price-tag { display: inline-block; background: var(--text); color: black; padding: 5px 15px; border-radius: 10px; font-weight: 900; margin-top: 10px; }
 
         .content { padding: 20px; }
-        .section-label { font-weight: 900; margin: 25px 0 15px; font-size: 20px; color: var(--p); display: flex; align-items: center; gap: 8px; }
-        .section-label::after { content: ""; height: 1px; background: var(--border); flex: 1; }
+        .section-label { font-weight: 900; margin: 30px 0 15px; font-size: 22px; color: var(--p); border-right: 4px solid var(--p); padding-right: 10px; }
 
-        .tabs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
-        .tab { background: var(--card); color: var(--gray); padding: 10px 20px; border-radius: 12px; font-weight: bold; border: 1px solid var(--border); white-space: nowrap; }
-        .tab.active { background: var(--p); color: black; border-color: var(--p); }
+        /* horizontal 3D List */
+        .h-list { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+        .h-list::-webkit-scrollbar { display: none; }
+        .h-card { min-width: 110px; background: var(--card); padding: 20px 10px; border-radius: 25px; text-align: center; border: 2px solid var(--border); transition: 0.3s; }
+        .h-card.active { border-color: var(--p); background: rgba(249,115,22,0.05); }
+        .h-card span { font-size: 30px; display: block; margin-bottom: 8px; }
 
-        .h-list { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
-        .h-card { min-width: 100px; background: var(--card); padding: 15px 10px; border-radius: 20px; text-align: center; border: 1.5px solid var(--border); }
-        .h-card.active { border-color: var(--p); }
-        .h-card span { font-size: 28px; display: block; margin-bottom: 5px; }
+        /* Visual Menu */
+        .menu-item { background: var(--card); border-radius: 20px; display: flex; align-items: center; padding: 12px; gap: 15px; margin-bottom: 12px; border: 1px solid var(--border); }
+        .menu-item img { width: 85px; height: 85px; border-radius: 15px; object-fit: cover; }
+        .item-details h4 { font-size: 17px; color: var(--p); margin-bottom: 4px; }
+        .item-details p { font-size: 12px; color: var(--gray); }
 
-        .menu-item-card { background: var(--card); border-radius: 20px; display: flex; align-items: center; padding: 12px; gap: 15px; margin-bottom: 12px; border: 1px solid var(--border); }
-        .menu-item-card img { width: 80px; height: 80px; border-radius: 15px; object-fit: cover; }
-        .item-details h4 { font-size: 16px; color: var(--p); }
-        .item-details p { font-size: 11px; color: var(--gray); }
-        .item-price { font-weight: 900; font-size: 14px; margin-top: 5px; display: block; }
-
-        .progress-bar { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--p); width: 0%; transition: 0.3s; }
+        .progress-bar { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--p); width: 0%; }
     </style>
 </head>
 <body>
 
     <div id="splash">
-        <div style="text-align: center; width: 80%;">
-            <img src="1000241254.jpg" class="logo-main">
-            <button style="width:100%; padding:15px; border-radius:15px; background:var(--p); border:none; font-weight:bold; margin-bottom:10px;" onclick="startApp('ku')">دەستپێکردن</button>
-            <button style="width:100%; padding:15px; border-radius:15px; background:transparent; border:1px solid white; color:white;" onclick="startApp('en')">English</button>
+        <div style="text-align: center;">
+            <img src="1000241254.jpg" class="logo-main" alt="Rizzoli">
+            <button style="padding: 15px 50px; border-radius: 15px; background: var(--p); border: none; font-weight: bold; cursor: pointer;" onclick="closeSplash()">دەستپێکردن</button>
         </div>
     </div>
 
     <div class="ar-box">
-        <model-viewer id="mv" src="" ar camera-controls auto-rotate shadow-intensity="1" scale="1 1 1" environment-image="neutral">
+        <model-viewer id="mv" src="models/burger.glb" ar camera-controls auto-rotate shadow-intensity="1" scale="1 1 1">
             <div class="progress-bar" id="pb"></div>
         </model-viewer>
         <div class="model-info">
-            <h2 id="display-name">...</h2>
-            <p id="display-ing">...</p>
-            <span id="display-price">... IQD</span>
+            <h2 id="display-name">بەرگری ڕیزۆلی</h2>
+            <p id="display-ing">گۆشتی فرێش، پەنیر، کاهوو، سۆسی تایبەت</p>
+            <div class="price-tag"><span id="display-price">7,500</span> IQD</div>
         </div>
     </div>
 
     <div class="content">
-        <div class="section-label" id="3d-label">3D MENU</div>
-        <div class="tabs" id="cat-tabs"></div>
-        <div class="h-list" id="3d-list"></div>
+        <div class="section-label">مێنۆی ٣دی</div>
+        <div class="h-list" id="3d-list">
+            <div class="h-card active" onclick="updateModel('models/burger.glb', 'بەرگری ڕیزۆلی', 'گۆشتی فرێش، پەنیر، سۆسی تایبەت', '7,500', '1 1 1', this)">
+                <span>🍔</span><h4>بەرگر</h4>
+            </div>
+            <div class="h-card" onclick="updateModel('models/chicken.glb', 'چێکن بۆکس', 'مریشکی سوورەکراو، فینگەر', '6,000', '1 1 1', this)">
+                <span>📦</span><h4>بۆکس</h4>
+            </div>
+        </div>
 
-        <div class="section-label" id="full-menu-label">VISUAL MENU</div>
-        <div id="visual-menu-container"></div>
+        <div class="section-label">مێنۆی وێنەیی</div>
+        <div id="visual-menu">
+            <div class="menu-item">
+                <img src="images/1000242352.png">
+                <div class="item-details">
+                    <h4>تاوەر بەرگر</h4>
+                    <p>دوو پارچە گۆشت، پەنیر، تەماتە</p>
+                    <b style="color:white">9,000 IQD</b>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        let curL = 'ku';
-        const menuData = {
-            models: {
-                burgers: [
-                    // ئەگەر بینیت مۆدێلێک هێشتا بچووکە، دەتوانیت scale لێرەدا بگۆڕیت، بۆ نموونە "2 2 2"
-                    { name: {ku:"تاوەر بەرگر", en:"Tower Burger"}, price:"9,000", ing:{ku:"گۆشتی فرێش، پەنیر"}, file:"models/ghjjgfgvv.glb", icon:"🍔", scale: "1 1 1" },
-                    { name: {ku:"فریدۆم بەرگر", en:"Freedom Burger"}, price:"6,500", ing:{ku:"مریشک، پەنیر"}, file:"models/freedom.glb", icon:"🍔", scale: "1 1 1" }
-                ],
-                rizzo: [
-                    { name: {ku:"ڕیزۆ هێربس", en:"Rizzo Herbs"}, price:"5,500", ing:{ku:"برنج، مریشک"}, file:"models/rizzo.glb", icon:"🍚", scale: "1 1 1" }
-                ]
-            },
-            fullMenu: [
-                { cat: {ku:"بەرگر", en:"Burgers"}, items: [
-                    { n: {ku:"تاوەر بەرگر", en:"Tower"}, p: "9,000", img: "images/1000242352.png", ing: {ku:"سنگی مریشک، پەنیر"} }
-                ]}
-            ]
-        };
-
-        function startApp(l) {
-            curL = l;
-            document.getElementById('html-tag').dir = (l === 'ku') ? 'rtl' : 'ltr';
-            renderTabs();
-            renderVisualMenu();
-            switchCat('burgers');
-            document.getElementById('splash').style.display = 'none';
+        function closeSplash() {
+            document.getElementById('splash').style.opacity = '0';
+            setTimeout(() => document.getElementById('splash').style.display = 'none', 600);
         }
 
-        function renderTabs() {
-            const cats = [{id:'burgers', n:{ku:"🍔 بەرگر", en:"Burgers"}}, {id:'rizzo', n:{ku:"🍚 ڕیزۆ", en:"Rizzo"}}];
-            document.getElementById('cat-tabs').innerHTML = cats.map(c => 
-                `<div class="tab" id="tab-${c.id}" onclick="switchCat('${c.id}')">${c.n[curL]}</div>`).join('');
-        }
-
-        function switchCat(id) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.getElementById('tab-'+id).classList.add('active');
-            const ms = menuData.models[id];
-            document.getElementById('3d-list').innerHTML = ms.map((m, i) => `
-                <div class="h-card ${i===0?'active':''}" onclick="updateMV('${m.file}', '${m.name[curL]}', '${m.price}', '${m.ing[curL]}', '${m.scale}', this)">
-                    <span>${m.icon}</span><h4>${m.name[curL]}</h4>
-                </div>`).join('');
-            updateMV(ms[0].file, ms[0].name[curL], ms[0].price, ms[0].ing[curL], ms[0].scale);
-        }
-
-        function updateMV(f, n, p, ing, sc, el) {
+        function updateModel(file, name, ing, price, scale, element) {
             const mv = document.getElementById('mv');
-            mv.src = f;
-            mv.setAttribute('scale', sc); // لێرەدا قەبارەکە جێگیر دەکرێت
-            document.getElementById('display-name').innerText = n;
+            mv.src = file;
+            
+            // ئەم هێڵە زۆر گرنگە بۆ ئەوەی قەبارەکە ڕێک بێت
+            // ئەگەر بینیت زۆر بچووکە، لە ناو هێڵەکەی خوارەوە لە جیاتی scale بینووسە "10 10 10"
+            mv.setAttribute('scale', scale); 
+
+            document.getElementById('display-name').innerText = name;
             document.getElementById('display-ing').innerText = ing;
-            document.getElementById('display-price').innerText = p;
-            if(el) { document.querySelectorAll('.h-card').forEach(c => c.classList.remove('active')); el.classList.add('active'); }
+            document.getElementById('display-price').innerText = price;
+
+            // گۆڕینی ستایلی کارتەکان
+            document.querySelectorAll('.h-card').forEach(c => c.classList.remove('active'));
+            element.classList.add('active');
         }
 
-        function renderVisualMenu() {
-            let html = '';
-            menuData.fullMenu.forEach(cat => {
-                html += `<div style="color:var(--gray); margin: 15px 0;">${cat.cat[curL]}</div>`;
-                cat.items.forEach(item => {
-                    html += `<div class="menu-item-card">
-                        <img src="${item.img}">
-                        <div class="item-details">
-                            <h4>${item.n[curL]}</h4>
-                            <p>${item.ing[curL]}</p>
-                            <span class="item-price">${item.p} IQD</span>
-                        </div>
-                    </div>`;
-                });
-            });
-            document.getElementById('visual-menu-container').innerHTML = html;
-        }
-
+        // بارکردنی مۆدێلەکە
         document.getElementById('mv').addEventListener('progress', e => {
             document.getElementById('pb').style.width = (e.detail.totalProgress * 100) + '%';
         });
